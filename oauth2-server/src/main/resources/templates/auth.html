@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--/*@thymesVar id="auth" type="me.zhaotb.oauth.server.bean.AuthInfo"*/-->
+<!--/*@thymesVar id="error" type="java.lang.Boolean"*/-->
+<p th:if="${error}" style="color: red; font-size: 26px">授权失败</p>
+<form th:action="${'/authorization/auth-login'}" method="post" style="">
+    <input type="hidden" name="scope" th:value="${auth.scope}">
+    <input type="hidden" name="clientId" th:value="${auth.clientId}">
+    <input type="hidden" name="redirectUri" th:value="${auth.redirectUri}">
+    <input type="hidden" name="state" th:value="${auth.state}">
+    <label>邮箱: </label><input name="account"/><br>
+    <label>密码: </label><input name="password"/><br>
+    <input type="submit" value="确认"/>
+</form>
+<label>授权信息如下:</label><br>
+<label th:text="${auth.scope}">
+</label>
+</body>
+<head>
+    <meta charset="UTF-8">
+    <title>授权</title>
+</head>
+</html>

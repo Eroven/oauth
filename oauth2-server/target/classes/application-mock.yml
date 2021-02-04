@@ -1,0 +1,12 @@
+mock:
+  domain: jq.server.com
+  user-account:
+    account: user
+    password: 123
+    nickname: 张三
+    friends: ["李四", "王五"]
+  registerClient:
+    client-123: pwd-123
+spring:
+  thymeleaf:
+    cache: false

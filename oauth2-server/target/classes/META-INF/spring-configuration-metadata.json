@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "mock",
+      "type": "me.zhaotb.oauth.server.config.MockDataConfig",
+      "sourceType": "me.zhaotb.oauth.server.config.MockDataConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "mock.domain",
+      "type": "java.lang.String",
+      "description": "域名",
+      "sourceType": "me.zhaotb.oauth.server.config.MockDataConfig"
+    },
+    {
+      "name": "mock.register-client",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "description": "注册过的第三方客户端",
+      "sourceType": "me.zhaotb.oauth.server.config.MockDataConfig"
+    },
+    {
+      "name": "mock.user-account",
+      "type": "me.zhaotb.oauth.server.bean.UserAccount",
+      "description": "用户信息",
+      "sourceType": "me.zhaotb.oauth.server.config.MockDataConfig"
+    }
+  ],
+  "hints": []
+}
