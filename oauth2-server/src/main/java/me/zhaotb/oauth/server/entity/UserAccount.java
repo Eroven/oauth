@@ -1,4 +1,4 @@
-package me.zhaotb.oauth.server.bean;
+package me.zhaotb.oauth.server.entity;
 
 
 import lombok.Data;

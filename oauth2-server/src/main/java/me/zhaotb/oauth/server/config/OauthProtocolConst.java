@@ -8,21 +8,6 @@ package me.zhaotb.oauth.server.config;
 public final class OauthProtocolConst {
 
     /**
-     * 简化模式
-     */
-    public static final String IMPLICIT = "accessToken";
-
-    /**
-     * 密码模式
-     */
-    public static final String RESOURCE_OWNER_PASSWORD_CREDENTIALS = "password";
-
-    /**
-     * 客户端模式
-     */
-    public static final String CLIENT_CREDENTIALS = "clientcredentials";
-
-    /**
      * 客户端请求类型
      */
     public final class GrantType {
@@ -61,6 +46,18 @@ public final class OauthProtocolConst {
      * scope分割符
      */
     public static final String SCOPE_PERMISSION_SEPARATOR = ";";
+
+
+    /**
+     * 访问码失效时间3分钟
+     */
+    public static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 3;
+
+    /**
+     * 刷新码失效时间1小时
+     */
+    public static final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60;
+
 
 
 }

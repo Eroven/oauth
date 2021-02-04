@@ -2,7 +2,7 @@ package me.zhaotb.oauth.server.config;
 
 
 import lombok.Data;
-import me.zhaotb.oauth.server.bean.UserAccount;
+import me.zhaotb.oauth.server.entity.UserAccount;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 

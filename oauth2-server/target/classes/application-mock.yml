@@ -10,3 +10,8 @@ mock:
 spring:
   thymeleaf:
     cache: false
+jwt:
+  secret: iskrc8#-xsi7d0-21n389asndj1LJHUGH*290BIWe9j213knmohs7
+  patterns:
+    - "/resource/**"
+    - "/user/**"

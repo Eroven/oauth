@@ -2,6 +2,7 @@ package me.zhaotb.oauth.server.bean;
 
 import lombok.Data;
 import me.zhaotb.oauth.server.config.OauthProtocolConst;
+import me.zhaotb.oauth.server.entity.UserAccount;
 import me.zhaotb.oauth.server.util.Attr;
 
 import java.io.Serializable;

@@ -29,4 +29,7 @@ public class AuthToken implements Serializable {
 
     private long refreshTokenEffectiveSeconds;
 
+    public static AuthToken empty() {
+        return new AuthToken();
+    }
 }

@@ -4,18 +4,17 @@ package me.zhaotb.oauth.server.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import me.zhaotb.oauth.server.bean.AuthInfo;
 import me.zhaotb.oauth.server.bean.AuthToken;
-import me.zhaotb.oauth.server.bean.UserAccount;
-import me.zhaotb.oauth.server.config.OauthProtocolConst;
+import me.zhaotb.oauth.server.bean.UserAccountJwtPayload;
 import me.zhaotb.oauth.server.config.MockDataConfig;
+import me.zhaotb.oauth.server.config.OauthProtocolConst;
+import me.zhaotb.oauth.server.entity.UserAccount;
 import me.zhaotb.oauth.server.service.AuthTokenService;
 import me.zhaotb.oauth.server.service.UserService;
-import me.zhaotb.oauth.server.util.RandomUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -76,50 +75,36 @@ public class UserServiceMockImpl implements UserService {
         String secret = registerClient.get(authInfo.getClientId());
         if (secret == null || !secret.equals(authInfo.getClientSecret())) {
             //未授权客户端
-            return null;
+            return AuthToken.empty();
         }
         //grant_type为空，认为也是 authorization_code
         if (StringUtils.isEmpty(authInfo.getGrantType()) || OauthProtocolConst.GrantType.AUTHORIZATION_CODE.equals(authInfo.getGrantType())) {
             String key = getKey(authInfo);
             @Nullable AuthInfo cache = authTokenService.getCache(AuthTokenService.CacheType.TT, key);
             if (cache == null) {
-                return null;
+                return AuthToken.empty();
             }
             //临时授权码置为无效
             authTokenService.invalidate(AuthTokenService.CacheType.TT, key);
-            String accessToken = RandomUtil.randomNumber(64);
-            String refreshToken = RandomUtil.randomNumber(64);
-            cache.setAccessToken(accessToken);
-            cache.setRefreshToken(refreshToken);
+
             UserAccount userAccount = getByAccount(cache.getAccount());
-            cache.setUserAccount(userAccount);
-            authTokenService.cacheCode(AuthTokenService.CacheType.AT, accessToken, cache);
-            authTokenService.cacheCode(AuthTokenService.CacheType.RT, refreshToken, cache);
-            return buildTokenObj(accessToken, refreshToken);
+            String accessToken = authTokenService.genAccessToken(cache, userAccount);
+            String refreshToken = authTokenService.genRefreshToken(cache);
+            return authTokenService.buildTokenObj(accessToken, refreshToken);
         } else if (OauthProtocolConst.GrantType.REFRESH_TOKEN.equals(authInfo.getGrantType())) {
-            @Nullable AuthInfo cache = authTokenService.getCache(AuthTokenService.CacheType.RT, authInfo.getRefreshToken());
-            if (cache == null) {
-                return null;
+            String refreshToken = authInfo.getRefreshToken();
+            UserAccountJwtPayload payload = authTokenService.getAccountFromRefreshToken(refreshToken, UserAccountJwtPayload.class);
+            if (payload == null || payload.getExpiration() < System.currentTimeMillis()) {
+                return AuthToken.empty();
             }
-            //如果之前的accessToken还没过期，主动将之前的accessToken清掉
-            authTokenService.invalidate(AuthTokenService.CacheType.AT, cache.getAccessToken());
-            String accessToken = RandomUtil.randomNumber(64);
-            cache.setAccessToken(accessToken);
-            authTokenService.cacheCode(AuthTokenService.CacheType.AT, accessToken, cache);
-            return buildTokenObj(accessToken, authInfo.getRefreshToken());
+            UserAccount userAccount = getByAccount(payload.getAccount());
+            AuthInfo tmp = new AuthInfo();
+            tmp.setScope(StringUtils.join(payload.getPathPermissions(), OauthProtocolConst.SCOPE_PERMISSION_SEPARATOR));
+            String accessToken = authTokenService.genAccessToken(tmp, userAccount);
+            return authTokenService.buildTokenObj(accessToken, authInfo.getRefreshToken());
         }
         log.warn("未知授权模式：{}", authInfo.getGrantType());
-        return null;
+        return AuthToken.empty();
     }
 
-    private AuthToken buildTokenObj(String token, String refreshToken) {
-        AuthToken tokenObj = new AuthToken();
-        tokenObj.setTokenType(OauthProtocolConst.TokenType.BEARER);
-        tokenObj.setCreateTime(new Date());
-        tokenObj.setAccessToken(token);
-        tokenObj.setTokenEffectiveSeconds(60 * 3);
-        tokenObj.setRefreshToken(refreshToken);
-        tokenObj.setRefreshTokenEffectiveSeconds(60 * 60);
-        return tokenObj;
-    }
 }

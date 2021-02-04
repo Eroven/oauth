@@ -3,7 +3,7 @@ package me.zhaotb.oauth.server.service;
 
 import me.zhaotb.oauth.server.bean.AuthInfo;
 import me.zhaotb.oauth.server.bean.AuthToken;
-import me.zhaotb.oauth.server.bean.UserAccount;
+import me.zhaotb.oauth.server.entity.UserAccount;
 
 /**
  * @author zhaotangbo
@@ -37,7 +37,7 @@ public interface UserService {
     /**
      * 根据临时授权码获取accessToken和refreshToken
      * @param authInfo 请求参数，包含： grant_type，code，redirect_uri, client_id, client_secret
-     * @return
+     * @return accessToken和refreshToken以及生失效时间
      */
     AuthToken authToken(AuthInfo authInfo);
 

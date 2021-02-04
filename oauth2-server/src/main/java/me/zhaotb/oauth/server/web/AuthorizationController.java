@@ -12,11 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,12 +32,25 @@ public class AuthorizationController {
         this.userService = userService;
     }
 
+    /**
+     * 请求授权
+     * @param model view
+     * @param authInfo 包含字段：response_type=code ，client_id，redirect_uri，scope，state
+     * @return 登录页面
+     */
     @GetMapping(value = "authorization/auth")
     public String auth(Model model,@Attr AuthInfo authInfo) {
         model.addAttribute("auth", authInfo);
         return "auth";
     }
 
+    /**
+     * 用户登录后重定向到redirect_uri去
+     * @param model view
+     * @param authInfo 授权信息
+     * @param response HttpServletResponse
+     * @return 授权失败，返回登录页面继续授权。授权成功，重定向到指定uri并传递临时授权码code
+     */
     @PostMapping("authorization/auth-login")
     public String login(Model model, @Attr AuthInfo authInfo, HttpServletResponse response) {
         String code = userService.authCode(authInfo);
@@ -63,6 +72,12 @@ public class AuthorizationController {
         return "auth";
     }
 
+    /**
+     * 第三方客户端通过后台请求，已获取accessToken和refreshToken
+     * @param authInfo 包含字段：
+     * @return 授权码。返回json格式为下换线分割的格式 {@link com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy}
+     *
+     */
     @PostMapping("authorization/token")
     @ResponseBody
     public AuthToken getToken(@Attr AuthInfo authInfo) {

@@ -2,6 +2,7 @@ package me.zhaotb.oauth.server.config;
 
 
 import me.zhaotb.oauth.server.bean.AuthInfo;
+import me.zhaotb.oauth.server.bean.UserAccountJwtPayload;
 import me.zhaotb.oauth.server.service.AuthTokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 通过路径直接判定权限
@@ -45,20 +47,19 @@ public class PathPermissionInterceptor implements HandlerInterceptor {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        AuthInfo cache = authTokenService.getCache(AuthTokenService.CacheType.AT, split[1]);
-        if (!OauthProtocolConst.TokenType.BEARER.equalsIgnoreCase(split[0]) || cache == null) {
+        UserAccountJwtPayload payload = authTokenService.getAccountFromAccessToken(split[1], UserAccountJwtPayload.class);
+        if (payload == null || payload.getExpiration() < System.currentTimeMillis()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        String scope = cache.getScope();
-        if (StringUtils.isBlank(scope)) {
+        List<String> permissions = payload.getPathPermissions();
+        if (permissions == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-        String[] permissions = scope.split(OauthProtocolConst.SCOPE_PERMISSION_SEPARATOR);
         for (String permission : permissions) {
             if (antPathMatcher.match(permission, request.getRequestURI())) {
-                request.setAttribute("userAccount", cache.getUserAccount());
+                request.setAttribute("userAccount", payload.getUserAccount());
                 return true;
             }
         }
