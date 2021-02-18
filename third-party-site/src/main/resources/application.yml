@@ -1,2 +1,8 @@
 server:
   port: 10020
+  address: localhost
+
+spring:
+  profiles:
+    active: mock
+

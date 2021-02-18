@@ -5,6 +5,7 @@
 <!--/*@thymesVar id="error" type="java.lang.Boolean"*/-->
 <p th:if="${error}" style="color: red; font-size: 26px">授权失败</p>
 <form th:action="${'/authorization/auth-login'}" method="post" style="">
+    <input type="hidden" name="responseType" th:value="${auth.responseType}">
     <input type="hidden" name="scope" th:value="${auth.scope}">
     <input type="hidden" name="clientId" th:value="${auth.clientId}">
     <input type="hidden" name="redirectUri" th:value="${auth.redirectUri}">

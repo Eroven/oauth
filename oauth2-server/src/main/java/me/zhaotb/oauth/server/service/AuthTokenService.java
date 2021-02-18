@@ -10,7 +10,7 @@ import me.zhaotb.oauth.server.entity.UserAccount;
 import java.util.Date;
 
 /**
- * 管理auth 2.0 的token，包含临时授权码、访问码、刷新码
+ * 管理auth 2.0 的token，包含临时授权码、访问码、刷新码，以及jwt的密钥
  * @author zhaotangbo
  * @date 2021/2/4
  */

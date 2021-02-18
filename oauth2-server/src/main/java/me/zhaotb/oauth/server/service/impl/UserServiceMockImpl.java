@@ -56,6 +56,10 @@ public class UserServiceMockImpl implements UserService {
 
     @Override
     public String authCode(AuthInfo authInfo) {
+        //不填response type也认为是获取授权码模式的临时码
+        if (authInfo.getResponseType() != null && !OauthProtocolConst.ResponseType.RESPONSE_CODE.equals(authInfo.getResponseType())) {
+            return null;
+        }
         if (login(authInfo.getAccount(), authInfo.getPassword()) == null) {
             return null;
         }

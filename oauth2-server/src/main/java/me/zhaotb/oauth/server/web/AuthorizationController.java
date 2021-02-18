@@ -76,7 +76,7 @@ public class AuthorizationController {
      * 第三方客户端通过后台请求，已获取accessToken和refreshToken
      * @param authInfo 包含字段：
      * @return 授权码。返回json格式为下换线分割的格式 {@link com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy}
-     *
+     * @see Attr 兼容下划线和驼峰两种格式
      */
     @PostMapping("authorization/token")
     @ResponseBody

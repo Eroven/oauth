@@ -1,0 +1,12 @@
+
+auth:
+  server-host: localhost
+  server-port: 9001
+  auth-url: /authorization/auth
+  token-url: /authorization/token
+  client-id: client-123
+  client-password: pwd-123
+
+user:
+  account: lili
+  password: 123456

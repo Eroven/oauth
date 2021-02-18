@@ -25,7 +25,7 @@ public class PathPermissionInterceptor implements HandlerInterceptor {
 
     private AuthTokenService authTokenService;
 
-    @Autowired
+    @Autowired(required = false)
     public void setAuthTokenService(AuthTokenService authTokenService) {
         this.authTokenService = authTokenService;
     }
@@ -57,6 +57,7 @@ public class PathPermissionInterceptor implements HandlerInterceptor {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
+        //判定是否具有访问路径的权限
         for (String permission : permissions) {
             if (antPathMatcher.match(permission, request.getRequestURI())) {
                 request.setAttribute("userAccount", payload.getUserAccount());

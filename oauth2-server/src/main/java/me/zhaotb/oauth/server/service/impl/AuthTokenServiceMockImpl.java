@@ -145,14 +145,12 @@ public class AuthTokenServiceMockImpl implements AuthTokenService {
 
     @Override
     public <T extends BaseJwtPayload> T getAccountFromAccessToken(String accessToken, Class<T> clazz) {
-        T payload = JwtUtil.parseJwt(accessToken, jwtConfig.getSecret(), clazz);
-        return payload;
+        return JwtUtil.parseJwt(accessToken, jwtConfig.getSecret(), clazz);
     }
 
     @Override
     public <T extends BaseJwtPayload> T getAccountFromRefreshToken(String refreshToken, Class<T> clazz) {
-        T payload = JwtUtil.parseJwt(refreshToken, jwtConfig.getSecret(), clazz);
-        return payload;
+        return JwtUtil.parseJwt(refreshToken, jwtConfig.getSecret(), clazz);
     }
 
     @Override

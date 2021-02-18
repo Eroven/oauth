@@ -5,6 +5,7 @@ import lombok.Data;
 import me.zhaotb.oauth.server.entity.UserAccount;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = "mock")
 @Configuration
+@Profile("mock")
 public class MockDataConfig {
 
     /**
