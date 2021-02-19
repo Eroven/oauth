@@ -16,21 +16,20 @@
 <div id="data"></div>
 </body>
 <script src="/jquery.3.5.1.min.js"></script>
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
-        function loadFriends(token, url) {
-            if (!token) return;
-            var data = document.getElementById("data");
-            $.ajax({
-                url: url,
-                headers: {
-                    Authorization: "bearer " + token.accessToken
-                },
-                success: function (data) {
-                    console.log(data)
+        $.ajax({
+            url: '/friends',
+            success: function (data) {
+                console.log(data);
+                var html = "<ul>";
+                for(d in data){
+                    html += "<li>" + data[d] + "</li>";
                 }
-            });
-        };
+                html += "</ul>";
+                $("#data").html(html);
+            }
+        });
 
     });
 

@@ -8,6 +8,7 @@ import me.zhaotb.tps.config.AuthConfig;
 import me.zhaotb.tps.config.MockUser;
 import me.zhaotb.tps.oauth.OAuthClient;
 import me.zhaotb.tps.oauth.OauthProtocolConst;
+import me.zhaotb.tps.web.http.RestResource;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,6 +37,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author zhaotangbo
@@ -42,7 +47,7 @@ import java.net.URLEncoder;
  */
 @Slf4j
 @Controller
-public class IndexController implements ApplicationContextAware {
+public class IndexController {
 
     /**
      * session属性，保存用户对象
@@ -53,9 +58,6 @@ public class IndexController implements ApplicationContextAware {
      */
     public static final String S_STATE = "S_STATE";
     public static final String S_AUTH_TOKEN = "S_AUTH_TOKEN";
-
-
-    private ApplicationContext context;
 
     @Value("${server.port}")
     private int port;
@@ -114,8 +116,22 @@ public class IndexController implements ApplicationContextAware {
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private RestResource restResource;
+
+    @RequestMapping("friends")
+    @ResponseBody
+    public List<String> friends(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object obj = session.getAttribute(S_AUTH_TOKEN);
+        if (obj == null || !(obj instanceof AuthToken)) {
+            return Collections.EMPTY_LIST;
+        }
+        AuthToken token = (AuthToken) obj;
+        List<String> friends = restResource.friends(
+                OauthProtocolConst.TokenType.BEARER + " " + token.getAccessToken());
+        return friends;
     }
+
 }

@@ -59,6 +59,11 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.dtflys.forest</groupId>
+            <artifactId>spring-boot-starter-forest</artifactId>
+            <version>1.5.0-RC3</version>
+        </dependency>
     </dependencies>
 
 </project>
